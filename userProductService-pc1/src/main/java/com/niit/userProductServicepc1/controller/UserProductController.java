@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
+@RequestMapping("/userproduct/user")
 
 public class UserProductController {
     private UserProductService userProductService;
