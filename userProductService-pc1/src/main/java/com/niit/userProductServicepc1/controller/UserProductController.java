@@ -51,7 +51,7 @@ public class UserProductController {
         return new ResponseEntity<>(userProductService.getAllProduct(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteproduct/{productId}/{userId}")
+    @DeleteMapping("/deleteproduct/{productId}/{email}")
     public ResponseEntity<?> deleteUserProductFromList(@PathVariable int productId, @PathVariable int userId) throws UserNotFoundException, ProductNotFoundException {
         try {
             responseEntity = new ResponseEntity<>(userProductService.deleteUserProductFromList(String.valueOf(productId), userId), HttpStatus.OK);
