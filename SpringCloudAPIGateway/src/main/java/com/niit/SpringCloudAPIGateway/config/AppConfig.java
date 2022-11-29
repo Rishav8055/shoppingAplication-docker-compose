@@ -13,11 +13,11 @@ public class AppConfig {
         return routeLocatorBuilder.routes()
                 .route(p->p
                 .path("/userservice/user/**")
-                .uri("http://authentication-service:9200/"))
+                .uri("lb://authentication-service:9200/"))
 
                 .route(p->p
                         .path("/userproduct/user/**")
-                        .uri("http://product-service:9100/"))
+                        .uri("lb://product-service:9100/"))
                 .build();
     }
 }
