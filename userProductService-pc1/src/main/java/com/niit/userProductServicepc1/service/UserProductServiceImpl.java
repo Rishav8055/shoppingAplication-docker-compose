@@ -5,8 +5,10 @@ import com.niit.userProductServicepc1.domain.UserModel;
 import com.niit.userProductServicepc1.exception.ProductNotFoundException;
 import com.niit.userProductServicepc1.exception.UserAlreadyExistsException;
 import com.niit.userProductServicepc1.exception.UserNotFoundException;
+import com.niit.userProductServicepc1.proxy.UserProxy;
 import com.niit.userProductServicepc1.repository.UserProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -15,10 +17,11 @@ import java.util.List;
 @Service
 public class UserProductServiceImpl implements UserProductService {
     private UserProductRepo userProductRepo;
-
+    private UserProxy userProxy;
     @Autowired
-    public UserProductServiceImpl(UserProductRepo userProductRepo) {
+    public UserProductServiceImpl(UserProductRepo userProductRepo, UserProxy userProxy) {
         this.userProductRepo = userProductRepo;
+        this.userProxy = userProxy;
     }
 
     @Override
@@ -26,7 +29,12 @@ public class UserProductServiceImpl implements UserProductService {
         if (userProductRepo.findById(userModel.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException();
         }
-        return userProductRepo.save(userModel);
+        UserModel savedUser =userProductRepo.save(userModel);
+        if (!savedUser.getEmail().isEmpty()){
+            ResponseEntity res = userProxy.saveUser(userModel);
+            System.out.println(res.getBody());
+        }
+        return savedUser;
     }
 
     @Override
