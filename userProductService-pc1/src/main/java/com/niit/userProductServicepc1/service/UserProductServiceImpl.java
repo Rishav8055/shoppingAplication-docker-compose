@@ -5,23 +5,38 @@ import com.niit.userProductServicepc1.domain.UserModel;
 import com.niit.userProductServicepc1.exception.ProductNotFoundException;
 import com.niit.userProductServicepc1.exception.UserAlreadyExistsException;
 import com.niit.userProductServicepc1.exception.UserNotFoundException;
-import com.niit.userProductServicepc1.proxy.UserProxy;
+
+import com.niit.userProductServicepc1.rabbitMq.CommonUser;
+import com.niit.userProductServicepc1.rabbitMq.Producer;
+import com.niit.userProductServicepc1.rabbitMq.UserDTO;
 import com.niit.userProductServicepc1.repository.UserProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class UserProductServiceImpl implements UserProductService {
+
     private UserProductRepo userProductRepo;
-    private UserProxy userProxy;
     @Autowired
-    public UserProductServiceImpl(UserProductRepo userProductRepo, UserProxy userProxy) {
+    private Producer producer;
+
+    @Autowired
+    public UserProductServiceImpl(UserProductRepo userProductRepo) {
         this.userProductRepo = userProductRepo;
-        this.userProxy = userProxy;
+
+    }
+
+    @Override
+    public UserModel addUser1(CommonUser commonUser) {
+        UserDTO userDTO = new UserDTO(commonUser.getUserId(),commonUser.getPassword());
+        producer.sendDtoToQueue(userDTO);
+        UserModel userModel=new UserModel(commonUser.getUserId(),commonUser.getUserName(),commonUser.getEmail());
+        return userProductRepo.insert(userModel);
     }
 
     @Override
@@ -29,12 +44,9 @@ public class UserProductServiceImpl implements UserProductService {
         if (userProductRepo.findById(userModel.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException();
         }
-        UserModel savedUser =userProductRepo.save(userModel);
-        if (!savedUser.getEmail().isEmpty()){
-            ResponseEntity res = userProxy.saveUser(userModel);
-            System.out.println(res.getBody());
-        }
-        return savedUser;
+
+
+        return userProductRepo.insert(userModel);
     }
 
     @Override

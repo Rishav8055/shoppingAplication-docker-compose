@@ -32,8 +32,7 @@
 	<modules>
 		<module>userAuthentication-pc1</module>
 		<module>userProductService-pc1</module>
-		<module>SpringCloudAPIGateway</module>
-		<module>EurekaServer</module>
+
 	</modules>
 
 	<build>

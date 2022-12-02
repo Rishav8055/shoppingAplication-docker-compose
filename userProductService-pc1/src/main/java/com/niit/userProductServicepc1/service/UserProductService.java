@@ -5,10 +5,13 @@ import com.niit.userProductServicepc1.domain.UserModel;
 import com.niit.userProductServicepc1.exception.ProductNotFoundException;
 import com.niit.userProductServicepc1.exception.UserAlreadyExistsException;
 import com.niit.userProductServicepc1.exception.UserNotFoundException;
+import com.niit.userProductServicepc1.rabbitMq.CommonUser;
 
 import java.util.List;
 
 public interface UserProductService {
+
+   UserModel addUser1(CommonUser commonUser);
    UserModel registerUser(UserModel userModel) throws UserAlreadyExistsException;
    UserModel saveUserProductToList(Product product,String email)throws UserNotFoundException;
    UserModel deleteUserProductFromList(String email,int productId)throws UserNotFoundException, ProductNotFoundException;

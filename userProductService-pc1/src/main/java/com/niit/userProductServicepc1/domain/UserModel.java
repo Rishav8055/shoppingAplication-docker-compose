@@ -23,6 +23,9 @@ public class UserModel {
         this.userName = userName;
     }
 
+    public UserModel(int userId, String userName, String email) {
+    }
+
     public List<Product> getProductList() {
         return productList;
     }
